@@ -30,7 +30,7 @@ Standard library only. Nothing to install.
 
 `FINALBOSS_V311_PUBLIC_PROOF_20260824_R1.zip`
 
-SHA-256 `14801b9cf6a7edabea3589f21f65a7793b2fe07e54f8a307d007ceca09c5f04b`
+SHA-256 `d4e7546a866de53a451d94423b03d495b2a6196071c37d9f07963f7630e7d7f5`
 
 Path-scrubbed evidence text (v1.1). Cryptographic material unchanged from the original packet. Prior digests remain on the [v1.0 release](https://github.com/805-ai/finalboss-proof/releases/tag/v1.0).
 
