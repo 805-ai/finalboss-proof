@@ -1,58 +1,66 @@
 name: publish-v311-path-scrub
+
 on:
-  workflow_dispatch:
+  workflow_dispatch: {}
   push:
     paths:
-      - '.github/release-triggers/v1.1-path-scrub'
+      - ".github/release-triggers/v1.1-path-scrub"
+
 permissions:
   contents: write
+
 jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: "3.12"
+
       - name: Download original V3.11 ZIP from v1.0
         run: |
           set -euo pipefail
           curl -fsSL -o /tmp/orig.zip \
             "https://github.com/805-ai/finalboss-proof/releases/download/v1.0/FINALBOSS_V311_PUBLIC_PROOF_20260824_R1.zip"
           echo "0843262c04d1bc6b9dc66be15ac94515ad44e1a5627562b19d078cd6bbe22342  /tmp/orig.zip" | sha256sum -c
+
       - name: Scrub paths and rebuild ZIP
         run: |
           set -euo pipefail
           python3 scripts/scrub_v311_paths.py /tmp/orig.zip /tmp/FINALBOSS_V311_PUBLIC_PROOF_20260824_R1.zip
           echo "d4e7546a866de53a451d94423b03d495b2a6196071c37d9f07963f7630e7d7f5  /tmp/FINALBOSS_V311_PUBLIC_PROOF_20260824_R1.zip" | sha256sum -c
+
       - name: Verify public proof
         run: |
           set -euo pipefail
           python3 -m venv /tmp/fb-proof
           mkdir -p /tmp/extract
-          python3 - <<'PY'
-import zipfile
-zipfile.ZipFile('/tmp/FINALBOSS_V311_PUBLIC_PROOF_20260824_R1.zip').extractall('/tmp/extract')
-PY
+          python3 -c "import zipfile; zipfile.ZipFile('/tmp/FINALBOSS_V311_PUBLIC_PROOF_20260824_R1.zip').extractall('/tmp/extract')"
           PKT=$(find /tmp/extract -maxdepth 1 -mindepth 1 -type d | head -1)
           /tmp/fb-proof/bin/pip install -r "$PKT/REQUIREMENTS.txt"
           /tmp/fb-proof/bin/python "$PKT/tools/VERIFY_PUBLIC_PROOF.py" "$PKT"
           if grep -RIn '/home/ubuntu\|/var/lib/finalboss-one-engine\|grok-final-boss' "$PKT"; then
-            echo "PATH LEAK" >&2; exit 1
+            echo "PATH LEAK" >&2
+            exit 1
           fi
           echo PATH_SCAN_ZERO
+
       - name: Create v1.1 release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v1.1
-          name: FinalBoss public proofs v1.1 — V3.11 path-scrubbed
+          name: "FinalBoss public proofs v1.1 - V3.11 path-scrubbed"
           body: |
             Additive release. Keeps v1.0 assets unchanged.
 
             Capsule V2 SHA-256 26810aee448859cfbe28ba461d71079ea439bf21e12a4c29a680e9467556ce83 (unchanged; still on v1.0)
             V3.11 (path-scrubbed) SHA-256 d4e7546a866de53a451d94423b03d495b2a6196071c37d9f07963f7630e7d7f5
 
-            Host path strings scrubbed from evidence text only (`/home/ubuntu/...` → `[SOURCE_ARCHIVE]/...`, `/var/lib/finalboss-one-engine/...` → `[ENGINE_ROOT]/...`). Cryptographic material unchanged. MANIFEST regenerated. VERIFY_PUBLIC_PROOF.py PASS.
+            Host path strings scrubbed from evidence text only (/home/ubuntu/... -> [SOURCE_ARCHIVE]/..., /var/lib/finalboss-one-engine/... -> [ENGINE_ROOT]/...). Cryptographic material unchanged. MANIFEST regenerated. VERIFY_PUBLIC_PROOF.py PASS.
 
             Run steps in the README.
           files: /tmp/FINALBOSS_V311_PUBLIC_PROOF_20260824_R1.zip
