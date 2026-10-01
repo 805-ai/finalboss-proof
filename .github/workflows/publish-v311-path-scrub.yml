@@ -12,7 +12,7 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p /tmp/asset
-          base64 -d artifacts/FINALBOSS_V311_PUBLIC_PROOF_20260824_R1.zip.b64 > /tmp/asset/FINALBOSS_V311_PUBLIC_PROOF_20260824_R1.zip
+          cat artifacts/v311-zip-b64/part*.b64 | base64 -d > /tmp/asset/FINALBOSS_V311_PUBLIC_PROOF_20260824_R1.zip
           echo "14801b9cf6a7edabea3589f21f65a7793b2fe07e54f8a307d007ceca09c5f04b  /tmp/asset/FINALBOSS_V311_PUBLIC_PROOF_20260824_R1.zip" | sha256sum -c
       - name: Create v1.1 release
         uses: softprops/action-gh-release@v2
