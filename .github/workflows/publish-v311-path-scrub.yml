@@ -1,0 +1,33 @@
+name: publish-v311-path-scrub
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Decode scrubbed V3.11 ZIP
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/asset
+          base64 -d artifacts/FINALBOSS_V311_PUBLIC_PROOF_20260824_R1.zip.b64 > /tmp/asset/FINALBOSS_V311_PUBLIC_PROOF_20260824_R1.zip
+          echo "14801b9cf6a7edabea3589f21f65a7793b2fe07e54f8a307d007ceca09c5f04b  /tmp/asset/FINALBOSS_V311_PUBLIC_PROOF_20260824_R1.zip" | sha256sum -c
+      - name: Create v1.1 release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v1.1
+          name: FinalBoss public proofs v1.1 — V3.11 path-scrubbed
+          body: |
+            Additive release. Keeps v1.0 assets unchanged.
+
+            Capsule V2 SHA-256 26810aee448859cfbe28ba461d71079ea439bf21e12a4c29a680e9467556ce83 (unchanged; still on v1.0)
+            V3.11 (path-scrubbed) SHA-256 14801b9cf6a7edabea3589f21f65a7793b2fe07e54f8a307d007ceca09c5f04b
+
+            Host path strings scrubbed from evidence text only (`/home/ubuntu/...` → `[SOURCE_ARCHIVE]/...`, `/var/lib/finalboss-one-engine/...` → `[ENGINE_ROOT]/...`). Cryptographic material unchanged. MANIFEST regenerated. VERIFY_PUBLIC_PROOF.py PASS.
+
+            Run steps in the README.
+          files: /tmp/asset/FINALBOSS_V311_PUBLIC_PROOF_20260824_R1.zip
+          fail_on_unmatched_files: true
+          make_latest: true
