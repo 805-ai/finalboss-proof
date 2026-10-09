@@ -2,13 +2,16 @@
 
 Don't trust us. Check it yourself.
 
-If you received a printed FinalBoss proof packet, use the **exact two verification bundles below**. Their filenames and SHA-256 values match the printed proof enclosure.
+Download both ZIPs from the Release: https://github.com/805-ai/finalboss-proof/releases/latest
 
-## Download the exact proof bundles
+Check the hash first:
 
-### 1. Fail-closed proof capsule V2
+- Windows: `certutil -hashfile FILE.zip SHA256`
+- macOS / Linux: `shasum -a 256 FILE.zip`
 
-[Download FINALBOSS_PUBLIC_PROOF_CAPSULE_20260927_V2.zip](https://github.com/805-ai/finalboss-proof/releases/download/v1.0/FINALBOSS_PUBLIC_PROOF_CAPSULE_20260927_V2.zip)
+## 1. Fail-closed proof capsule V2
+
+`FINALBOSS_PUBLIC_PROOF_CAPSULE_20260927_V2.zip`
 
 SHA-256 `26810aee448859cfbe28ba461d71079ea439bf21e12a4c29a680e9467556ce83`
 
@@ -19,17 +22,17 @@ py VERIFY_PUBLIC.py        (Windows)
 python3 VERIFY_PUBLIC.py   (macOS / Linux)
 ```
 
-Expected last line:
-
-`FINAL PASS 4/4 PUBLIC FAIL-CLOSED PROOFS VERIFIED`
+Expected last line: `FINAL PASS 4/4 PUBLIC FAIL-CLOSED PROOFS VERIFIED`
 
 Standard library only. Nothing to install.
 
-### 2. V3.11 AMD SEV-SNP public proof
+## 2. V3.11 AMD SEV-SNP proof
 
-[Download FINALBOSS_V311_PUBLIC_PROOF_20260824_R1.zip](https://github.com/805-ai/finalboss-proof/releases/download/v1.0/FINALBOSS_V311_PUBLIC_PROOF_20260824_R1.zip)
+`FINALBOSS_V311_PUBLIC_PROOF_20260824_R1.zip`
 
-SHA-256 `0843262c04d1bc6b9dc66be15ac94515ad44e1a5627562b19d078cd6bbe22342`
+SHA-256 `d4e7546a866de53a451d94423b03d495b2a6196071c37d9f07963f7630e7d7f5`
+
+Path-scrubbed evidence text (v1.1). Cryptographic material unchanged from the original packet. Prior digests remain on the [v1.0 release](https://github.com/805-ai/finalboss-proof/releases/tag/v1.0).
 
 Linux x86-64, Python 3.12, `python3-venv`. In the extracted folder:
 
@@ -39,14 +42,7 @@ python3 -m venv /tmp/fb-proof
 /tmp/fb-proof/bin/python tools/VERIFY_PUBLIC_PROOF.py
 ```
 
-Expected result: JSON ending with `"status": "PASS"`.
-
-## Check the hash before running
-
-- Windows: `certutil -hashfile FILE.zip SHA256`
-- macOS / Linux: `shasum -a 256 FILE.zip`
-
-The printed packet is the commitment. If a downloaded ZIP does not match the SHA-256 printed above and in the enclosure, do not use it as the referenced proof.
+Expected: JSON with `"status": "PASS"`
 
 No private keys. No credentials. No engine source.
 
