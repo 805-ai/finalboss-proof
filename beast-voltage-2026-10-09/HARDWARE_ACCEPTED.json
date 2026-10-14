@@ -1,0 +1,21 @@
+{
+  "status": "PASS",
+  "source_inventory_sha256": "742438002691569ea783bbed15d2980d62c7940c77ab718d9ed4929aef2a5e38",
+  "hardware_verification_sha256": "e55864a2ddc69e76e8a9b73282319ef6ea0dbb06652b9fe5e9f25f2ae5fc69d9",
+  "session_manifest_sha256": "f67e37414575b6d2d0bd93e9161fa0bfdab62a538a2aa7d0e24f8b7c0421720f",
+  "pod_id": "cmv12syz4000el506kagn0eeh",
+  "at_unix": 1791557583.7732363,
+  "run_public": "I1o6zXNku6fKIqT3ZjZETX9HMXJQoxZ/zmsGr7dr1v4=",
+  "authorization_sha256": "f62a52682e89d6aeafbea6905e51ea3ec400c08fe7ce2f634596e7d7d05b1fa4",
+  "operator_verification_result_sha256": "bc501c39fe085ef3d1257989302f0e9095ce0051f899d33660eb82d2ea3bdccc",
+  "hardware_verified_started_unix": 1791557581.747992,
+  "hardware_verified_ended_unix": 1791557583.7727716,
+  "nvidia_token_issued_unix": 1791557579.0,
+  "nvidia_token_expires_unix": 1791561179.0,
+  "scope": "FRESH_AT_ADMISSION_OFF_GUEST_CRYPTOGRAPHIC_VERIFICATION; NOT_CONTINUOUS_HARDWARE_ATTESTATION; RUN_KEY_BOUND_IN_ATTESTED_MANIFEST",
+  "ssh_host_trust": {
+    "mode": "TDX_BOUND_FIRST_CONTACT",
+    "fingerprint": "SHA256:ZpYhiNeRZnWRm9d7AZ7a/68BPH/FAkyycgEZs/3VTYE",
+    "scope": "SSH host key first seen by the operator at first contact, then read inside the guest and carried in the attested manifest (Intel TDX report_data = SHA-512 of that manifest). Proves the key is held by a genuine Intel TDX guest on the provider image that answered this attestation. NOT_PROVEN: a workload-unique VM identity (provider image measurements are shared across VMs; RTMR3, MRCONFIGID and MROWNER are zero) and exclusion of an active on-path attacker that rewrites guest commands. Provider stated on 2026-10-02 that no authenticated host-key source exists."
+  }
+}

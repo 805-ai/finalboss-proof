@@ -1,0 +1,5 @@
+{
+  "run_public": "I1o6zXNku6fKIqT3ZjZETX9HMXJQoxZ/zmsGr7dr1v4=",
+  "algorithm": "Ed25519",
+  "bound_in": "SESSION_MANIFEST.json workload.extra.run_public (Intel TDX quote report data commits to this manifest)"
+}
