@@ -1,4 +1,4 @@
-﻿# Ring zero on an attested H100
+# Ring zero on an attested H100
 
 VoltageGPU's copy of this article: https://voltagegpu.com/blog/ring-zero-attested-h100
 
@@ -12,7 +12,7 @@ The evidence is FinalBoss's public archive, GUEST_EVIDENCE_PHASE2.tar.gz at comm
 
 On 18 October 2026, FinalBoss loaded three eBPF cgroup hooks (connect4, sendmsg4 and sock_create) into the kernel of a VoltageGPU H100 confidential VM (Intel TDX) with one GPU, running kernel 6.8.0-110-generic. The run had two phases.
 
-Phase 1 was a bounded test. Under the hooks, 3,000 of 3,000 unpermitted socket() calls were denied, and 3,000 of 3,000 permitted loopback TCP calls went through with zero failures. The median deny time was 10.94 Âµs. Phase 1 used a test permit to exercise the hooks. It ended at 22:53:50 UTC.
+Phase 1 was a bounded test. Under the hooks, 3,000 of 3,000 unpermitted socket() calls were denied, and 3,000 of 3,000 permitted loopback TCP calls went through with zero failures. The median deny time was 10.94 µs. Phase 1 used a test permit to exercise the hooks. It ended at 22:53:50 UTC.
 
 Phase 2 was the long run: 21 cycles, one every 120 seconds, from 22:53:53 to 23:34:04 UTC. Each cycle took a new hardware attestation, confirmed all three hooks attached, and ran a deny probe. All 21 cycles passed: 21 of 21 attestations succeeded, plus one attestation for the permit (cycle 0); 21 of 21 deny probes were denied; and 3 of 3 hooks were attached in every cycle. Phase 2 drew its permit from a signed gate receipt verified by permitctl. At the end, the hooks were detached. In round numbers, the long run lasted about 40 minutes.
 
@@ -64,7 +64,7 @@ Sources: proof/BPF_LOAD.txt, proof/CGROUP_ATTACHMENTS.txt, proof/BPF_UNLOAD.txt,
 
 The run used a VoltageGPU H100 confidential VM (Intel TDX) with one GPU. The archive holds 22 attestation bundles: bundle_0000, taken for the gate permit before cycle 1, and bundle_0001 to bundle_0021, one per cycle. Each was made inside the VM with voltage-verify 0.2.1 and holds two proofs over one manifest.
 
-**The manifest** holds a challenge, a creation time, a statement and workload fields, all written by FinalBoss. In the 22 manifests, the workload fields carry the company name, the cycle number, the session nonce 9497347602a44f2088ed53b3a885a34c and the SHA-256 fingerprints of the two gate public keys (e4baefa2â€¦ and 511d1622â€¦).
+**The manifest** holds a challenge, a creation time, a statement and workload fields, all written by FinalBoss. In the 22 manifests, the workload fields carry the company name, the cycle number, the session nonce 9497347602a44f2088ed53b3a885a34c and the SHA-256 fingerprints of the two gate public keys (e4baefa2… and 511d1622…).
 
 **The Intel TDX quote** carries the SHA-512 of the canonical manifest (keys sorted, no whitespace, UTF-8) as its 64-byte report_data. Intel's Quoting Enclave signs it, the chain ends at the Intel SGX Root CA, and Intel's signed collateral rates the platform's patch level.
 
@@ -72,7 +72,7 @@ The run used a VoltageGPU H100 confidential VM (Intel TDX) with one GPU. The arc
 
 **What bundle_0000 shows** (the same values in all 22 bundles):
 
-- Quote v4, 4,940 bytes. MRTD eea8b6a8â€¦, the measurement of the VM's initial memory. RTMR3 is all zeros, so no runtime measurement was added. TD attributes 0000001000000000: debug off.
+- Quote v4, 4,940 bytes. MRTD eea8b6a8…, the measurement of the VM's initial memory. RTMR3 is all zeros, so no runtime measurement was added. TD attributes 0000001000000000: debug off.
 - Intel: platform TCB, Quoting Enclave and TDX module TDX_01 all UpToDate (TCB level of 13 August 2025); the PCK certificate and its CA are not revoked.
 - NVIDIA: one GH100 GPU; measurements matched, secure boot on, debug disabled; driver 595.71.05, VBIOS 96.00.CF.00.01.
 
@@ -88,10 +88,10 @@ Sources: proof/cycles/ (manifests and bundles); section 6; docs/WHAT_IT_PROVES.m
 
 Section 2 describes the receipt. voltage-verify does not read it, so we checked the chain below with our own script, which recomputes each value from the published files (figure 1).
 
-1. **Keys to manifest.** The SHA-256 of gate_ed25519.pub is e4baefa2â€¦ and the SHA-256 of gate_mldsa87.pub is 511d1622â€¦: the two fingerprints in manifest_0000.json.
+1. **Keys to manifest.** The SHA-256 of gate_ed25519.pub is e4baefa2… and the SHA-256 of gate_mldsa87.pub is 511d1622…: the two fingerprints in manifest_0000.json.
 2. **Manifest to hardware.** The quote in bundle_0000.json carries the SHA-512 of that manifest as its report_data, and both NVIDIA tokens carry its SHA-256 as eat_nonce.
-3. **Receipt to attestation.** The receipt's signing_key_id is tdx: followed by 3a1e6e64â€¦, the SHA-256 of the file bundle_0000.json.
-4. **Receipt to keys.** The receipt's two fingerprints equal the two key-file hashes. We recomputed the receipt hash as section 2 defines it and got f87320cfâ€¦, the value in the receipt, and both signatures verify over its hex text with the published public keys (Python cryptography 50.0.2). The hash covers signing_key_id and the fingerprints: when we changed one character of either, the hash changed and both signatures failed.
+3. **Receipt to attestation.** The receipt's signing_key_id is tdx: followed by 3a1e6e64…, the SHA-256 of the file bundle_0000.json.
+4. **Receipt to keys.** The receipt's two fingerprints equal the two key-file hashes. We recomputed the receipt hash as section 2 defines it and got f87320cf…, the value in the receipt, and both signatures verify over its hex text with the published public keys (Python cryptography 50.0.2). The hash covers signing_key_id and the fingerprints: when we changed one character of either, the hash changed and both signatures failed.
 5. **Every cycle.** The 22 manifests carry the same two fingerprints and the same session nonce, so all 22 quotes and NVIDIA attestations commit to the same gate keys.
 6. **Time.** The receipt contains the hash of bundle_0000.json, which holds an NVIDIA token issued at 22:53:57 UTC, so the receipt was signed after that time. The receipt has no time field of its own.
 
